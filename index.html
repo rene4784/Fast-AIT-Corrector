@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fast AIT Corrector</title>
+  <!-- ニューモーフィズムのCSS -->
+  <style>
+/* ベースカラー */
+body {
+  background-color: #e0e0e0;
+  /* フレックスボックスにする */
+  display: flex;
+  /* 垂直方向に中央揃え */
+  align-items: center;
+  /* 水平方向に中央揃え */
+  justify-content: center;
+  /* 縦に並べる */
+  flex-direction: column;
+}
+
+/* ボタン */
+button {
+  width: 20vw;
+  height:10vh;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  box-shadow: inset 2px 2px 4px #c0c0c0, inset -2px -2px 4px #ffffff;
+  font-size: min(2vw, 20px);
+}
+
+/* テキストエリア */
+textarea {
+  width: 60vw;
+  height:20vh;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  box-shadow: inset 4px 4px 8px #b0b0b0, inset -4px -4px 8px #f8f8f8;
+}
+
+/* ボタンのホバー */
+button:hover {
+  box-shadow: inset 4px 4px 8px #b0b0b0, inset -4px -4px 8px #f8f8f8;
+}
+
+/* ボタンのアクティブ */
+button:active {
+  box-shadow: inset 4px 4px 8px #b0b0b0, inset -4px -4px 8px #f8f8f8;
+}
+
+/* テキストエリアのフォーカス */
+textarea:focus {
+  box-shadow: inset 4px 4px 8px #b0b0b0, inset -4px -4px 8px #f8f8f8;
+}
+
+/* テキストエリアとボタンを囲むdiv */
+div {
+  /* 縦に並べる */
+  flex-direction: column;
+  /* 隙間を開ける */
+  margin-bottom: 10px;
+}
+  </style>
+</head>
+<h1>Fast AIT Corrector</h1>
+<svg width="100" height="100"><circle cx="50" cy="50" r="40" fill="#f0f0f0" stroke="#e8e8e8"/><path d="M 50 10 L 80 90 L 20 90 Z" fill="#c0c0c0"/></svg>
+<p>簡単にHTMLのソースコードを修正できるツールです</p>
+<body>
+  <textarea id="neumorphic-textarea" rows="10" cols="50"></textarea><br>
+  <button id="neumorphic-button">修正する</button><br><br>
+ <textarea id="result" rows="10" cols="50"></textarea>
+  <div id="radioGroup">
+    <input type="radio" name="altOption" value="copy" checked>altにもコピーする<br>
+    <input type="radio" name="altOption" value="none">コピーしない<br>
+    <input type="radio" name="altOption" value="keep">altが空の場合のみコピーする<br>
+  </div>
+<script>
+function convert() {
+  // 入力されたソースを取得
+  var sourceCode = document.getElementById("neumorphic-textarea").value;
+  // ラジオボタンの値を取得
+  var radioValue = document.querySelector('input[name="altOption"]:checked').value;
+  // aタグのtitle属性をimgタグのtitle属性にコピーし、aタグを削除
+  var temp = document.createElement("div");
+  temp.innerHTML = sourceCode;
+  // 全てのaタグを取得
+  var aList = temp.getElementsByTagName("a");
+  // 配列に変換
+  var aArray = Array.from(aList);
+  // ペアの数だけループ
+  for (var a of aArray) {
+    // aタグの中のimgタグを取得
+    var img = a.querySelector("img");
+    img.title = a.title;
+    // ラジオボタンの値に応じてalt属性を設定
+    if (radioValue === "copy") {
+      img.alt = a.title;
+    } else if (radioValue === "keep") {
+      if (!img.alt) {
+        img.alt = a.title;
+      }
+    }
+    a.parentNode.replaceChild(img, a);
+  }
+  // 修正されたソースを表示
+  document.getElementById("result").value = temp.innerHTML;
+}
+
+// ニューモーフィズムのボタンにクリックイベントを付ける
+document.getElementById("neumorphic-button").addEventListener("click", convert);
+  </script>
+</body>
+</html>
